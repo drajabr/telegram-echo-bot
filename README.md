@@ -37,8 +37,10 @@ For example, if your bot is named `MyForwarder~`, all forwarded messages will ha
 Configurations are added in environment variables or [`.env.sample`](./.env.sample) file and rename it to `.env`. The following environment variables are required to run the bot.
 
 -   `BOT_TOKEN` - Telegram bot token received from [BotFather](https://t.me/BotFather)
--   `REDIS_URI` - Redis database URI to store the channel ids. You can use [Redis Labs](https://redislabs.com/) to get a free Redis database
--   `WEBHOOK_HOST` - URL of the server where the bot is running
+-   `REDIS_URI` - Redis database URI. When you use the provided Docker Compose file the default is `redis://redis:6379` (the bundled `redis` service); you may override it in `.env` if you need a remote Redis instance.
+-   `WEBHOOK_HOST` - URL of the server where the bot is running (Traefik will forward your public domain to port **3000** inside the container)
+
+*The bot listens on port 3000 internally; the reverse proxy (Traefik) maps your public hostname to that port.*
 
 ## Deploying
 
@@ -58,6 +60,8 @@ Note: You need SSL certificates and a public IP address to run the bot. As this 
 
 #### Using Docker
 
+*The compose file now includes a Traefik reverse proxy that automatically obtains TLS certificates via Cloudflare DNS.*
+
 -   Clone this repository
 
 ```sh
@@ -65,22 +69,23 @@ git clone <repo-url> <project-name>
 cd <project-name>
 ```
 
--   Create a `.env` file with your environment variables (see [`.env.sample`](./.env.sample))
+-   Create a `.env` file with your environment variables (see [`.env.sample`](./.env.sample)).
+    - If you plan to use the bundled Redis service, set `REDIS_URI=redis://redis:6379` or omit it entirely and the compose file will default to that value.
+    - To enable HTTPS with Traefik and Cloudflare DNS challenge, set `DOMAIN=<yourdomain.com>`, add a Cloudflare API token with DNS-edit permissions as `CLOUDFLARE_API_TOKEN`, and optionally provide `CF_EMAIL` for certificate registration. Set `WEBHOOK_HOST` to `https://<yourdomain.com>`.
 
--   Run with Docker Compose
+-   Run with Docker Compose (the `redis` and `traefik` services will start automatically and proxy to the bot on port 3000):
 
 ```sh
+# start bot + redis + reverse proxy in background
 docker-compose up -d
 ```
 
-Or build and run manually:
+-   (Optional) you can still build and run the bot image manually if you prefer:
 
 ```sh
 docker build -t telegram-forwarder-bot .
 docker run -d --env-file .env -p 3000:3000 telegram-forwarder-bot
-```
-
-#### Manual Deployment
+```#### Manual Deployment
 
 -   Clone this repository
 

@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  bot:
+    # image pulled from GitHub Container Registry (GitHub Packages)
+    image: ghcr.io/drajabr/telegram-echo-bot:latest
+    restart: unless-stopped
+    depends_on:
+      - redis
+    ports:
+      - "3000:3000"            # expose for external reverse proxy
+    environment:
+      BOT_TOKEN: "${BOT_TOKEN}"
+      WEBHOOK_HOST: "${WEBHOOK_HOST}"
+      # the bot will connect to the redis service on this network; you can override via .env
+      REDIS_URI: "${REDIS_URI:-redis://redis:6379}"
+    # keep a named volume for possible app data (no host mount required)
+    volumes:
+      - bot-data:/app/data
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data: {}
+  bot-data: {}
+  traefik_letsencrypt: {}
