@@ -10,7 +10,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/viperadnan-git/telegram-forwarder-bot.git"
+        "url": "git+https://github.com/drajabr/telegram-echo-bot.git"
     },
     "keywords": [
         "telegram",
@@ -22,9 +22,9 @@
     "author": "Adnan Ahmad",
     "license": "GPL-3.0-or-later",
     "bugs": {
-        "url": "https://github.com/viperadnan-git/telegram-forwarder-bot/issues"
+        "url": "https://github.com/drajabr/telegram-echo-bot/issues"
     },
-    "homepage": "https://github.com/viperadnan-git/telegram-forwarder-bot#readme",
+    "homepage": "https://github.com/drajabr/telegram-echo-bot#readme",
     "dependencies": {
         "@grammyjs/parse-mode": "^1.11.1",
         "dotenv": "^16.6.1",
