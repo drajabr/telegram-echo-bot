@@ -27,4 +27,3 @@ services:
 volumes:
   redis-data: {}
   bot-data: {}
-  traefik_letsencrypt: {}
