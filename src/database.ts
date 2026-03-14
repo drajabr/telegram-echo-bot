@@ -129,6 +129,22 @@ class Database {
 
         return chatMap;
     }
+
+    public async setUserState(botId: number, userId: number, state: string) {
+        return await this.client.setex(
+            `${REDIS_PREFIX}:${botId}:user:${userId}:state`,
+            300, // 5 minutes expiry
+            state
+        );
+    }
+
+    public async getUserState(botId: number, userId: number): Promise<string | null> {
+        return await this.client.get(`${REDIS_PREFIX}:${botId}:user:${userId}:state`);
+    }
+
+    public async clearUserState(botId: number, userId: number) {
+        return await this.client.del(`${REDIS_PREFIX}:${botId}:user:${userId}:state`);
+    }
 }
 
 let REDIS_URI = process.env.REDIS_URI;
